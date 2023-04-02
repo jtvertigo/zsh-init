@@ -74,7 +74,7 @@ git config --global user.email "vertigojt@null.domain"
 echo -e "\n==> Setting colorscheme for vim"
 mkdir -p ~/.vim/colors
 git clone https://github.com/Rigellute/rigel.git
-cp ~/rigel/colors/rigel.vim ~/.vim/colors
+cp rigel/colors/rigel.vim ~/.vim/colors
 
 cat >> ~/.vimrc << EOF
 set termguicolors
@@ -88,7 +88,7 @@ echo -e "\n==> Installing zsh"
 sudo $pmng -y install zsh
 echo -e "\n==> Installing oh-my-zsh"
 wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
-sed -i 's/exec zsh -l/ /' ~/install.sh
+sed -i 's/exec zsh -l/ /' install.sh
 chmod +x ./install.sh
 ./install.sh
 echo -e "\n==> Installing oh-my-zsh plugins"
