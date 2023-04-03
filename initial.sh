@@ -96,5 +96,10 @@ git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-m
 echo -e "\n==> Enabling plugins in ~/.zshrc"
 sed -i 's/^plugins=(git.*/plugins=(git zsh-autosuggestions)/' ~/.zshrc
 
+echo -e "\n==> Copying theme to oh-my-zsh folder"
+cp vertigo.zsh-theme ~/.oh-my-zsh/themes/i
+echo -e "\n==> Enabling vertigo theme as default"
+sed -i 's/^ZSH_THEME=.*/ZSH_THEME="vertigo"/' ~/.zshrc
+
 echo -e "\n==> Done!"
 zsh
