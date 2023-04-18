@@ -105,5 +105,10 @@ cp vertigo.zsh-theme ~/.oh-my-zsh/themes/
 echo -e "\n==> Enabling vertigo theme as default"
 sed -i 's/^ZSH_THEME=.*/ZSH_THEME="vertigo"/' ~/.zshrc
 
+if [[ "$OS" == *"Rocky"* ]]; then
+	echo -e "\n==> Making zsh as default shell"
+	sudo usermod -s $(which zsh) ${USER}
+fi
+
 echo -e "\n==> Done!"
 zsh
