@@ -17,6 +17,10 @@ elif [[ "$OS" == "Red Hat"* ]]; then
   echo -e "\n==> Linux distribution is: $OS"
   pmng="yum"
   bash=".bash_profile"
+elif [[ "$OS" == *"Rocky"* ]]; then
+  echo -e "\n==> Linux distribution is: $OS"
+  pmng="dnf"
+  bash=".bash_profile"
 elif [[ "$OS" == "Ubuntu"* ]]; then
   echo -e "\n==> Linux distribution is: $OS"
   pmng="apt"
