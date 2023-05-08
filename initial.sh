@@ -110,5 +110,8 @@ if [[ "$OS" == *"Rocky"* ]]; then
 	sudo usermod -s $(which zsh) ${USER}
 fi
 
+cd ..
+rm -rf zsh-init
+
 echo -e "\n==> Done!"
 zsh
