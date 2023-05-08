@@ -13,7 +13,7 @@ if [[ "$OS" == "CentOS"* ]]; then
 	echo -e "\n==> Linux distribution is: $OS"
   pmng="yum"
   bash=".bash_profile"
-elif [[ "$OS" == "Red Hat"* ]]; then
+elif [[ "$OS" == *"Red Hat"* ]]; then
   echo -e "\n==> Linux distribution is: $OS"
   pmng="yum"
   bash=".bash_profile"
