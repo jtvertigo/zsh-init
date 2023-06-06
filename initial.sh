@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# setup.sh
-
 # font Operator Mono
 # git clone https://github.com/keyding/Operator-Mono.git
 
@@ -10,7 +8,7 @@ OS="$(( lsb_release -ds || cat /etc/*release || uname -om ) 2>/dev/null | head -
 git_version="v2.39.0"
 
 if [[ "$OS" == "CentOS"* ]]; then
-	echo -e "\n==> Linux distribution is: $OS"
+  echo -e "\n==> Linux distribution is: $OS"
   pmng="yum"
   bash=".bash_profile"
 elif [[ "$OS" == *"Red Hat"* ]]; then
@@ -34,39 +32,40 @@ else
 fi
 
 echo -e "\n==> Installing wget git tree"
-if [[ "$OS" == "CentOS 7"* ]]; then
-	sudo $pmng -y remove git*
-	sudo $pmng -y install epel-release
-	sudo $pmng -y groupinstall "Development Tools"
-	sudo $pmng -y install wget tree perl-CPAN gettext-devel perl-devel openssl-devel \
-	zlib-devel curl-devel expat-devel getopt asciidoc xmlto docbook2X 
-	sudo ln -s /usr/bin/db2x_docbook2texi /usr/bin/docbook2x-texi
-	wget https://github.com/git/git/archive/$git_version.tar.gz
-	tar -xvf $git_version.tar.gz
-	rm -f $git_version.tar.gz
-	cd git-*
-	make configure
-	sudo ./configure --prefix=/usr
-	sudo make
-	sudo make install
-	cd ~
-	echo "==> Installing vim"
-	sudo $pmng install -y gcc make ncurses ncurses-devel
-	sudo $pmng install -y ctags git tcl-devel ruby ruby-devel lua lua-devel luajit luajit-devel \
-	python python-devel perl perl-devel perl-ExtUtils-ParseXS perl-ExtUtils-XSpp \
-	perl-ExtUtils-CBuilder perl-ExtUtils-Embed
-	sudo $pmng remove -y vim-enhanced vim-common vim-filesystem
+if [[ "$OS" == "CentOS Linux release 7"* ]]; then
+  sudo $pmng -y remove git
+  sudo $pmng -y install epel-release
+  sudo $pmng -y groupinstall "Development Tools"
+  sudo $pmng -y install wget tree perl-CPAN gettext-devel perl-devel openssl-devel \
+  zlib-devel curl-devel expat-devel getopt asciidoc xmlto docbook2X
+  sudo ln -s /usr/bin/db2x_docbook2texi /usr/bin/docbook2x-texi
+  wget https://github.com/git/git/archive/$git_version.tar.gz
+  tar -xvf $git_version.tar.gz
+  rm -f $git_version.tar.gz
+  cd git-*
+  make configure
+  sudo ./configure --prefix=/usr
+  sudo make
+  sudo make install
+  cd ..
+  echo "==> Installing vim"
+  sudo $pmng install -y gcc make ncurses ncurses-devel
+  sudo $pmng install -y ctags git tcl-devel ruby ruby-devel lua lua-devel luajit luajit-devel \
+  python python-devel perl perl-devel perl-ExtUtils-ParseXS perl-ExtUtils-XSpp \
+  perl-ExtUtils-CBuilder perl-ExtUtils-Embed
+  sudo $pmng remove -y vim-enhanced vim-common vim-filesystem
 
-	echo "==> Cloning vim repository"
-	git clone https://github.com/vim/vim.git
-	cd vim
+  echo "==> Cloning vim repository"
+  git clone https://github.com/vim/vim.git
+  cd vim
 
-	echo "Compiling vim"
-	./configure --with-features=huge --enable-multibyte --enable-rubyinterp \
-	--enable-pythoninterp --enable-perlinterp --enable-luainterp
-	make
-	sudo make install
-	source ~/$bash
+  echo "Compiling vim"
+  ./configure --with-features=huge --enable-multibyte --enable-rubyinterp \
+  --enable-pythoninterp --enable-perlinterp --enable-luainterp
+  make
+  sudo make install
+  source ~/$bash
+  cd ..
 else
   sudo $pmng -y install wget git tree
 fi
@@ -106,12 +105,12 @@ echo -e "\n==> Enabling vertigo theme as default"
 sed -i 's/^ZSH_THEME=.*/ZSH_THEME="vertigo"/' ~/.zshrc
 
 if [[ "$OS" == *"Rocky"* ]]; then
-	echo -e "\n==> Making zsh as default shell"
-	sudo usermod -s $(which zsh) ${USER}
+  echo -e "\n==> Making zsh as default shell"
+  sudo usermod -s $(which zsh) ${USER}
 fi
 
 cd ..
-rm -rf zsh-init
+sudo rm -rf zsh-init
 
 echo -e "\n==> Done!"
 zsh
