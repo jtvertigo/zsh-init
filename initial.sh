@@ -104,6 +104,27 @@ cp vertigo.zsh-theme ~/.oh-my-zsh/themes/
 echo -e "\n==> Enabling vertigo theme as default"
 sed -i 's/^ZSH_THEME=.*/ZSH_THEME="vertigo"/' ~/.zshrc
 
+echo -e "\n==> Adding aliases to ~/.zshrc file"
+echo '
+alias k="kubectl"
+alias kgp="kubectl get pods"
+alias kgpa="kubectl get pods -A"
+alias kgd="kubectl get deployment"
+alias kgda="kubectl get deployment -A"
+alias kgss="kubectl get statefulset"
+alias kgssa="kubectl get statefulset -A"
+alias kgs="kubectl get services"
+alias kgsa="kubectl get services -A"
+alias kga="kubectl get all"
+alias kgaa="kubectl get all -A"
+alias kgaaw="kubectl get all -A -o wide"
+alias kgn="kubectl get nodes"
+alias kgnw="kubectl get nodes -o wide"
+alias dp="docker ps"
+alias dpa="docker ps -a"
+alias di="docker images"
+alias sss="ss -tulpna | grep -i listen"' >> ~/.zshrc
+
 if [[ "$OS" == *"Rocky"* ]]; then
   echo -e "\n==> Making zsh as default shell"
   sudo usermod -s $(which zsh) ${USER}
