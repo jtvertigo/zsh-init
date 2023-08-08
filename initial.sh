@@ -123,11 +123,17 @@ alias kgnw="kubectl get nodes -o wide"
 alias dp="docker ps"
 alias dpa="docker ps -a"
 alias di="docker images"
-alias sss="ss -tulpna | grep -i listen"' >> ~/.zshrc
+alias sss="ss -tulpna | grep -i listen"
+alias ssss="sudo ss -tulpna | grep -i listen"' >> ~/.zshrc
 
 if [[ "$OS" == *"Rocky"* ]]; then
   echo -e "\n==> Making zsh as default shell"
   sudo usermod -s $(which zsh) ${USER}
+fi
+
+if kubectl &> /dev/null; then
+  echo -e "\n==> Adding autocompletion for kubectl"
+  echo '[[ $commands[kubectl] ]] && source <(kubectl completion zsh)' >> ~/.zshrc
 fi
 
 cd ..
