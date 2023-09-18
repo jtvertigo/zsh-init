@@ -144,7 +144,7 @@ alias au="sudo apt update"
 alias aup="sudo apt update -y"
 alias status="systemctl status "
 
-alias zshup="git clone https://github.com/jtvertigo/zsh-init && cd zsh-init && ./initial.sh"
+alias zshup="rm -rf ~/.oh-my-zsh && git clone https://github.com/jtvertigo/zsh-init && cd zsh-init && ./initial.sh"
 
 export EDITOR="$(which vim)"
 export VISUAL=$EDITOR
