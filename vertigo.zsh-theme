@@ -1,4 +1,4 @@
-PROMPT="%{$fg[cyan]%}%n%{$fg[white]%}/%{$FG[203]%}%m %(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ )"
+PROMPT="%{$fg[cyan]%}%n%{$fg[white]%}/%{$FG[103]%}%m %(?:%{$FG[112]%}➜ :%{$FG[203]%}➜ )"
 PROMPT+='%{$FG[111]%}%c%{$reset_color%} $(git_prompt_info)'
 
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg_bold[blue]%}%{$fg[white]%}"
