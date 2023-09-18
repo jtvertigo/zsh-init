@@ -120,27 +120,35 @@ alias kgaa="kubectl get all -A"
 alias kgaaw="kubectl get all -A -o wide"
 alias kgn="kubectl get nodes"
 alias kgnw="kubectl get nodes -o wide"
+
 alias d="docker"
 alias dp="docker ps"
 alias dpa="docker ps -a"
 alias di="docker images"
+
 alias sss="ss -tulpna | grep -i listen"
 alias ssss="sudo ss -tulpna | grep -i listen"
+
 alias tf="terraform"
 alias tfp="terraform plan"
 alias tfaa="terraform apply -auto-approve"
+
 alias gi="git init ."
 alias gl="git log"
 alias ga="git add -A"
 alias gs="git status"
 alias gc="git commit -m "
 alias gpom="git push origin master"
+
 alias au="sudo apt update"
 alias aup="sudo apt update -y"
+alias status="systemctl status "
+
 alias zshup="git clone https://github.com/jtvertigo/zsh-init && cd zsh-init && ./initial.sh"
-export EDITOR="/usr/bin/vim"
-export VISUAL="/usr/bin/vim"
-export SYSTEMD_EDITOR="/usr/bin/vim"' >> ~/.zshrc
+
+export EDITOR="$(which vim)"
+export VISUAL=$EDITOR
+export SYSTEMD_EDITOR=$EDITOR' >> ~/.zshrc
 
 if [[ "$OS" == *"Rocky"* ]]; then
   echo -e "\n==> Making zsh as default shell"
