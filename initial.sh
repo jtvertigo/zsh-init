@@ -1,9 +1,6 @@
 #!/bin/bash
 
-# font Operator Mono
-# git clone https://github.com/keyding/Operator-Mono.git
 
-# FIXME: change 'if' to 'case'
 OS="$(( lsb_release -ds || cat /etc/*release || uname -om ) 2>/dev/null | head -n1)"
 git_version="v2.39.0"
 
@@ -67,7 +64,12 @@ if [[ "$OS" == "CentOS Linux release 7"* ]]; then
   source ~/$bash
   cd ..
 else
-  sudo $pmng -y install wget git tree
+  sudo $pmng -y install wget git tree jq
+fi
+
+if [[ "$OS" == "Ubuntu"* ]]; then
+  echo -e "\n==> Installing bat"
+  sudo $pmng install -y bat
 fi
 
 echo -e "\n==> Setting git config parameters"
@@ -97,7 +99,7 @@ chmod +x ./install.sh
 echo -e "\n==> Installing oh-my-zsh plugins"
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 echo -e "\n==> Enabling plugins in ~/.zshrc"
-sed -i 's/^plugins=(git.*/plugins=(git zsh-autosuggestions)/' ~/.zshrc
+sed -i 's/^plugins=(git.*/plugins=(git zsh-autosuggestions kube-ps1)/' ~/.zshrc
 
 echo -e "\n==> Copying theme to oh-my-zsh folder"
 cp vertigo.zsh-theme ~/.oh-my-zsh/themes/
@@ -138,6 +140,7 @@ alias gl="git log"
 alias ga="git add -A"
 alias gs="git status"
 alias gc="git commit -m "
+alias gd="git diff"
 alias gpom="git push origin master"
 
 alias au="sudo apt update"
@@ -150,6 +153,12 @@ export EDITOR="$(which vim)"
 export VISUAL=$EDITOR
 export SYSTEMD_EDITOR=$EDITOR' >> ~/.zshrc
 
+if [[ "$OS" == "Ubuntu"* ]]; then
+echo '
+alias cat="batcat"
+alias ccat="/usr/bin/cat"' >> ~/.zshrc
+fi
+
 if [[ "$OS" == *"Rocky"* ]]; then
   echo -e "\n==> Making zsh as default shell"
   sudo usermod -s $(which zsh) ${USER}
@@ -159,6 +168,13 @@ if kubectl &> /dev/null; then
   echo -e "\n==> Adding autocompletion for kubectl"
   echo '[[ $commands[kubectl] ]] && source <(kubectl completion zsh)' >> ~/.zshrc
 fi
+
+echo '
+if kubectl &> /dev/null; then
+  kubeon
+else
+  kubeoff
+fi' >> ~/.zshrc
 
 cd ..
 sudo rm -rf zsh-init
