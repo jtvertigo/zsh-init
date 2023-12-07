@@ -76,17 +76,31 @@ echo -e "\n==> Setting git config parameters"
 git config --global user.name "vertigojt"
 git config --global user.email "vertigojt@null.domain"
 
-echo -e "\n==> Setting colorscheme for vim"
+echo -e "\n==> 🌈 Setting colorscheme for vim 🌈"
 mkdir -p ~/.vim/colors
 git clone https://github.com/Rigellute/rigel.git
 cp rigel/colors/rigel.vim ~/.vim/colors
 
-cat >> ~/.vimrc << EOF
+echo -e "\n==> Installing plugin manager for vim"
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+echo -e "\n==> Setting up .vimrc file"
+cat > ~/.vimrc << EOF
 set termguicolors
 syntax enable
 colorscheme rigel
 set autoindent expandtab tabstop=2 shiftwidth=2
 hi Normal guibg=NONE ctermbg=NONE
+
+call plug#begin()
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'tpope/vim-fugitive'
+Plug 'scrooloose/nerdtree'
+call plug#end()
+
+let g:airline_powerline_fonts = 1
+let g:airline_theme = 'bubblegum'
 EOF
 
 echo -e "\n==> Installing zsh"
@@ -127,6 +141,8 @@ alias d="docker"
 alias dp="docker ps"
 alias dpa="docker ps -a"
 alias di="docker images"
+
+alis t="tkn"
 
 alias sss="ss -tulpna | grep -i listen"
 alias ssss="sudo ss -tulpna | grep -i listen"
@@ -169,11 +185,19 @@ if kubectl &> /dev/null; then
   echo '[[ $commands[kubectl] ]] && source <(kubectl completion zsh)' >> ~/.zshrc
 fi
 
+if tkn &> /dev/null; then
+  echo -e "\n==> Adding autocompletion for tekton"
+  echo '[[ $commands[tkn] ]] && source <(tkn completion zsh)' >> ~/.zshrc
+fi
+
 echo '
 if kubectl &> /dev/null; then
   kubeon
 else
   kubeoff
+fi
+if [ -e $HOME/.kube/config ]; then
+  export KUBECONFIG=$HOME/.kube/config
 fi' >> ~/.zshrc
 
 cd ..
