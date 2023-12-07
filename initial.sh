@@ -142,7 +142,7 @@ alias dp="docker ps"
 alias dpa="docker ps -a"
 alias di="docker images"
 
-alis t="tkn"
+alias t="tkn"
 
 alias sss="ss -tulpna | grep -i listen"
 alias ssss="sudo ss -tulpna | grep -i listen"
