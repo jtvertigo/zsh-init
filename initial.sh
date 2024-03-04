@@ -79,16 +79,21 @@ git config --global user.email "vertigojt@null.domain"
 echo -e "\n==> 🌈 Setting colorscheme for vim 🌈"
 mkdir -p ~/.vim/colors
 git clone https://github.com/Rigellute/rigel.git
+git clone https://github.com/catppuccin/vim.git
 cp rigel/colors/rigel.vim ~/.vim/colors
+cp vim/colors/catppuccin_*.vim ~/.vim/colors
 
 echo -e "\n==> Installing plugin manager for vim"
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+echo -e "\n==> 🌈 Setting theme for airline 🌈"
+cp vim/autoload/airline/themes/catppuccin_*.vim ~/.vim/plugged/vim-airline-themes/autoload/airline/themes
 
 echo -e "\n==> Setting up .vimrc file"
 cat > ~/.vimrc << EOF
 set termguicolors
 syntax enable
-colorscheme rigel
+colorscheme catppuccin_mocha
 set autoindent expandtab tabstop=2 shiftwidth=2
 hi Normal guibg=NONE ctermbg=NONE
 
@@ -100,25 +105,38 @@ Plug 'scrooloose/nerdtree'
 call plug#end()
 
 let g:airline_powerline_fonts = 1
-let g:airline_theme = 'bubblegum'
+let g:airline_theme = 'catppuccin_mocha'
 EOF
 
 echo -e "\n==> Installing zsh"
 sudo $pmng -y install zsh
+
 echo -e "\n==> Installing oh-my-zsh"
 wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
 sed -i 's/exec zsh -l/ /' install.sh
 chmod +x ./install.sh
 ./install.sh
+
 echo -e "\n==> Installing oh-my-zsh plugins"
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+
 echo -e "\n==> Enabling plugins in ~/.zshrc"
 sed -i 's/^plugins=(git.*/plugins=(git zsh-autosuggestions kube-ps1)/' ~/.zshrc
 
 echo -e "\n==> Copying theme to oh-my-zsh folder"
 cp vertigo.zsh-theme ~/.oh-my-zsh/themes/
+
 echo -e "\n==> Enabling vertigo theme as default"
 sed -i 's/^ZSH_THEME=.*/ZSH_THEME="vertigo"/' ~/.zshrc
+
+echo -e "\n==> Setting theme for batcat"
+mkdir -p "$(batcat --config-dir)/themes"
+curl --output-dir "$(batcat --config-dir)/themes" -LO https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Latte.tmTheme
+curl --output-dir "$(batcat --config-dir)/themes" -LO https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Frappe.tmTheme
+curl --output-dir "$(batcat --config-dir)/themes" -LO https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Macchiato.tmTheme
+curl --output-dir "$(batcat --config-dir)/themes" -LO https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Mocha.tmTheme
+batcat cache --build
+echo 'export BAT_THEME="Catppuccin%20Mocha"' >> ~/.zshrc
 
 echo -e "\n==> Adding aliases to ~/.zshrc file"
 echo '
@@ -190,6 +208,12 @@ if tkn &> /dev/null; then
   echo '[[ $commands[tkn] ]] && source <(tkn completion zsh)' >> ~/.zshrc
 fi
 
+if helm &> /dev/null; then
+  echo -e "\n==> Adding autocomletion for helm"
+  # helm completion zsh > "${fpath[1]}/_helm"
+  echo '[[ $commands[helm] ]] && source <(helm completion zsh)' >> ~/.zshrc
+fi
+
 echo '
 if kubectl &> /dev/null; then
   kubeon
@@ -202,6 +226,8 @@ fi' >> ~/.zshrc
 
 cd ..
 sudo rm -rf zsh-init
+
+vim +PlugInstall +qall
 
 echo -e "\n==> Done!"
 zsh
