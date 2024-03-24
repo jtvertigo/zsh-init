@@ -3,6 +3,7 @@
 
 OS="$(( lsb_release -ds || cat /etc/*release || uname -om ) 2>/dev/null | head -n1)"
 git_version="v2.39.0"
+NVIM_VERSION="v0.9.5"
 
 if [[ "$OS" == "CentOS"* ]]; then
   echo -e "\n==> Linux distribution is: $OS"
@@ -28,12 +29,12 @@ else
   echo -e "\n==> Unknown Linux distribution"; exit;
 fi
 
-echo -e "\n==> Installing wget git tree"
+echo -e "\n==> Installing wget git tree curl less vim"
 if [[ "$OS" == "CentOS Linux release 7"* ]]; then
   sudo $pmng -y remove git
   sudo $pmng -y install epel-release
   sudo $pmng -y groupinstall "Development Tools"
-  sudo $pmng -y install wget tree perl-CPAN gettext-devel perl-devel openssl-devel \
+  sudo $pmng -y install wget tree curl less perl-CPAN gettext-devel perl-devel openssl-devel \
   zlib-devel curl-devel expat-devel getopt asciidoc xmlto docbook2X
   sudo ln -s /usr/bin/db2x_docbook2texi /usr/bin/docbook2x-texi
   wget https://github.com/git/git/archive/$git_version.tar.gz
@@ -64,7 +65,7 @@ if [[ "$OS" == "CentOS Linux release 7"* ]]; then
   source ~/$bash
   cd ..
 else
-  sudo $pmng -y install wget git tree jq
+  sudo $pmng -y install wget git tree jq curl less vim
 fi
 
 if [[ "$OS" == "Ubuntu"* ]]; then
@@ -72,7 +73,7 @@ if [[ "$OS" == "Ubuntu"* ]]; then
   sudo $pmng install -y bat
 fi
 
-echo -e "\n==> Setting git config parameters"
+echo -e "\n==> Setting git config parameters"  # FIXME
 git config --global user.name "vertigojt"
 git config --global user.email "vertigojt@null.domain"
 
@@ -137,6 +138,8 @@ if batcat --help &> /dev/null; then
   echo 'export BAT_THEME="Catppuccin%20Mocha"' >> ~/.zshrc
 fi
 
+sleep 5
+
 echo -e "\n==> Adding aliases to ~/.zshrc file"
 echo '
 alias k="kubectl"
@@ -154,10 +157,15 @@ alias kgaaw="kubectl get all -A -o wide"
 alias kgn="kubectl get nodes"
 alias kgnw="kubectl get nodes -o wide"
 
+alias kdp="kubectl describe pod"
+alias kdd="kubectl describe deployment"
+alias kds="kubectl describe service"
+
 alias d="docker"
 alias dp="docker ps"
 alias dpa="docker ps -a"
 alias di="docker images"
+alias dc="docker compose"
 
 alias t="tkn"
 
@@ -180,11 +188,16 @@ alias au="sudo apt update"
 alias aup="sudo apt update -y"
 alias status="systemctl status "
 
+alias vim="nvim"
+alias vi="/usr/bin/vim"
+
 alias zshup="rm -rf ~/.oh-my-zsh && git clone https://github.com/jtvertigo/zsh-init && cd zsh-init && ./initial.sh"
 
 export EDITOR="$(which vim)"
 export VISUAL=$EDITOR
 export SYSTEMD_EDITOR=$EDITOR' >> ~/.zshrc
+
+sleep 1
 
 if [[ "$OS" == "Ubuntu"* ]]; then
 echo '
@@ -192,26 +205,36 @@ alias cat="batcat"
 alias ccat="/usr/bin/cat"' >> ~/.zshrc
 fi
 
+sleep 1
+
 if [[ "$OS" == *"Rocky"* ]]; then
   echo -e "\n==> Making zsh as default shell"
   sudo usermod -s $(which zsh) ${USER}
 fi
+
+sleep 1
 
 if kubectl &> /dev/null; then
   echo -e "\n==> Adding autocompletion for kubectl"
   echo '[[ $commands[kubectl] ]] && source <(kubectl completion zsh)' >> ~/.zshrc
 fi
 
+sleep 1
+
 if tkn &> /dev/null; then
   echo -e "\n==> Adding autocompletion for tekton"
   echo '[[ $commands[tkn] ]] && source <(tkn completion zsh)' >> ~/.zshrc
 fi
+
+sleep 1
 
 if helm &> /dev/null; then
   echo -e "\n==> Adding autocomletion for helm"
   # helm completion zsh > "${fpath[1]}/_helm"
   echo '[[ $commands[helm] ]] && source <(helm completion zsh)' >> ~/.zshrc
 fi
+
+sleep 1
 
 echo '
 if kubectl &> /dev/null; then
@@ -223,10 +246,57 @@ if [ -e $HOME/.kube/config ]; then
   export KUBECONFIG=$HOME/.kube/config
 fi' >> ~/.zshrc
 
+sleep 1
+
 vim +PlugInstall +qall
 
 echo -e "\n==> 🌈 Setting theme for airline 🌈"
 cp vim/autoload/airline/themes/catppuccin_*.vim ~/.vim/plugged/vim-airline-themes/autoload/airline/themes
+
+echo -e "\n==> Installing nvim" 
+curl -LO https://github.com/neovim/neovim/releases/download/"${NVIM_VERSION}"/nvim-linux64.tar.gz
+sudo rm -rf ~/.nvim
+mkdir -p ~/.nvim
+sudo tar -C ~/.nvim -xzf nvim-linux64.tar.gz
+
+sleep 5
+
+#if [[ ":$PATH:" != *"nvim/nvim-linux64/bin"* ]]; then
+  echo "export PATH=\"\$PATH:\${HOME}/.nvim/nvim-linux64/bin\"" >> ~/.zshrc
+#fi
+
+sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+
+echo -e "\n==> Setting up ~/.config/nvim/init.vim file"
+mkdir -p "${HOME}"/.config/nvim
+cat > ${HOME}/.config/nvim/init.vim << EOF
+set termguicolors
+syntax enable
+set autoindent expandtab tabstop=2 shiftwidth=2
+hi Normal guibg=NONE ctermbg=NONE
+
+call plug#begin()
+Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'tpope/vim-fugitive'
+Plug 'scrooloose/nerdtree'
+call plug#end()
+
+colorscheme catppuccin-mocha
+
+let g:airline_powerline_fonts = 1
+let g:airline_theme = 'catppuccin_mocha'
+EOF
+
+sudo cp -r ${HOME}/.vim/plugged/vim-airline ${HOME}/.local/share/nvim/plugged
+sudo cp -r ${HOME}/.vim/plugged/vim-airline-themes ${HOME}/.local/share/nvim/plugged
+sudo cp -r ${HOME}/.vim/plugged/vim-fugitive ${HOME}/.local/share/nvim/plugged
+
+sudo chown ${USER}:${USER} ${HOME}/.local/share/nvim/plugged
+
+nvim +PlugInstall +qall
 
 cd ..
 
