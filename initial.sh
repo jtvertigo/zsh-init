@@ -65,7 +65,7 @@ if [[ "$OS" == "CentOS Linux release 7"* ]]; then
   source ~/$bash
   cd ..
 else
-  sudo $pmng -y install wget git tree jq curl less vim
+  sudo $pmng -y install wget git tree jq curl less vim tmux
 fi
 
 if [[ "$OS" == "Ubuntu"* ]]; then
@@ -178,10 +178,12 @@ alias tfaa="terraform apply -auto-approve"
 
 alias gi="git init ."
 alias gl="git log"
+alias glb="git log | batcat"
 alias ga="git add -A"
 alias gs="git status"
 alias gc="git commit -m "
 alias gd="git diff"
+alias gdb="git diff | batcat"
 alias gpom="git push origin master"
 
 alias au="sudo apt update"
@@ -191,9 +193,19 @@ alias status="systemctl status "
 alias vim="nvim"
 alias vi="/usr/bin/vim"
 
+alias t="tmux"
+alias ta="tmux attach"
+
+alias p="pulumi"
+
 alias zshup="rm -rf ~/.oh-my-zsh && git clone https://github.com/jtvertigo/zsh-init && cd zsh-init && ./initial.sh"
 
-export EDITOR="$(which vim)"
+if nvim --version &> /dev/null; then
+  export EDITOR="nvim"
+else
+  export EDITOR="vim"
+fi
+
 export VISUAL=$EDITOR
 export SYSTEMD_EDITOR=$EDITOR' >> ~/.zshrc
 
@@ -234,6 +246,25 @@ if helm &> /dev/null; then
   echo '[[ $commands[helm] ]] && source <(helm completion zsh)' >> ~/.zshrc
 fi
 
+
+if pulumi &> /dev/null; then
+  echo -e "\n==> Adding autocompletion for pulumi"
+  echo '[[ $commands[pulumi] ]] && source <(pulumi completion zsh)' >> ~/.zshrc
+
+  echo -e "\n==> Adding pulumi binary in \$PATH"
+  if [[ ":$PATH:" != *"pulumi/bin"* ]]; then
+    echo "export PATH=\"\$PATH:\${HOME}/.pulumi/bin\"" >> ~/.zshrc
+  fi
+
+fi
+
+if go version &> /dev/null; then
+  echo -e "\n==> Adding go binary in \$PATH"
+  if [[ ":$PATH:" != *"usr/local/go/bin"* ]]; then
+    echo "export PATH=\"\$PATH:/usr/local/go/bin\"" >> ~/.zshrc
+  fi
+fi
+
 sleep 1
 
 echo '
@@ -242,6 +273,7 @@ if kubectl &> /dev/null; then
 else
   kubeoff
 fi
+
 if [ -e $HOME/.kube/config ]; then
   export KUBECONFIG=$HOME/.kube/config
 fi' >> ~/.zshrc
@@ -253,6 +285,43 @@ vim +PlugInstall +qall
 echo -e "\n==> 🌈 Setting theme for airline 🌈"
 cp vim/autoload/airline/themes/catppuccin_*.vim ~/.vim/plugged/vim-airline-themes/autoload/airline/themes
 
+echo -e "\n==> Installing plugin manager for tmux"
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+echo -e "\n Set settings for tmux"
+echo '
+unbind r
+bind r source-file ~/.tmux.conf
+
+set -g mouse on
+
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+
+set -g @plugin 'catppuccin/tmux'
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'xamut/tmux-weather'
+set-option -g @tmux-weather-location "Ulyanovsk"
+set-option -g @tmux-weather-interval 5
+set-option -g @tmux-weather-format "%t"
+
+set -g @catppuccin_window_right_separator "█ "
+set -g @catppuccin_window_number_position "right"
+set -g @catppuccin_window_middle_separator " | "
+
+set -g @catppuccin_window_default_fill "none"
+
+set -g @catppuccin_window_current_fill "all"
+
+set -g @catppuccin_status_modules_right "session directory user host weather"
+set -g @catppuccin_status_left_separator "█"
+set -g @catppuccin_status_right_separator "█"
+
+set -g @catppuccin_date_time_text "%Y-%m-%d %H:%M:%S"
+
+run '~/.tmux/plugins/tpm/tpm'
+' >> ~/.tmux.conf
+
 echo -e "\n==> Installing nvim" 
 curl -LO https://github.com/neovim/neovim/releases/download/"${NVIM_VERSION}"/nvim-linux64.tar.gz
 sudo rm -rf ~/.nvim
@@ -261,9 +330,10 @@ sudo tar -C ~/.nvim -xzf nvim-linux64.tar.gz
 
 sleep 5
 
-#if [[ ":$PATH:" != *"nvim/nvim-linux64/bin"* ]]; then
+echo -e "\n==> Adding nvim binary in \$PATH"
+if [[ ":$PATH:" != *"nvim/nvim-linux64/bin"* ]]; then
   echo "export PATH=\"\$PATH:\${HOME}/.nvim/nvim-linux64/bin\"" >> ~/.zshrc
-#fi
+fi
 
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
   https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
