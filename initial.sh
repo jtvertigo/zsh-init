@@ -246,7 +246,6 @@ if helm &> /dev/null; then
   echo '[[ $commands[helm] ]] && source <(helm completion zsh)' >> ~/.zshrc
 fi
 
-
 if pulumi &> /dev/null; then
   echo -e "\n==> Adding autocompletion for pulumi"
   echo '[[ $commands[pulumi] ]] && source <(pulumi completion zsh)' >> ~/.zshrc
@@ -288,7 +287,8 @@ cp vim/autoload/airline/themes/catppuccin_*.vim ~/.vim/plugged/vim-airline-theme
 echo -e "\n==> Installing plugin manager for tmux"
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
-echo -e "\n Set settings for tmux"
+echo -e "\n==> Set settings for tmux"
+rm -rf ~/.tmux.conf
 echo '
 unbind r
 bind r source-file ~/.tmux.conf
@@ -331,6 +331,12 @@ sudo tar -C ~/.nvim -xzf nvim-linux64.tar.gz
 sleep 5
 
 echo -e "\n==> Adding nvim binary in \$PATH"
+if cat ~/.zshrc | grep nvim/nvim ; then
+  echo -e "\n==> nvim binary already in \$PATH"
+else
+  echo "export PATH=\"\$PATH:\${HOME}/.nvim/nvim-linux64/bin\"" >> ~/.zshrc
+fi
+  
 if [[ ":$PATH:" != *"nvim/nvim-linux64/bin"* ]]; then
   echo "export PATH=\"\$PATH:\${HOME}/.nvim/nvim-linux64/bin\"" >> ~/.zshrc
 fi
