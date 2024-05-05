@@ -337,9 +337,10 @@ else
   echo "export PATH=\"\$PATH:\${HOME}/.nvim/nvim-linux64/bin\"" >> ~/.zshrc
 fi
   
-if [[ ":$PATH:" != *"nvim/nvim-linux64/bin"* ]]; then
-  echo "export PATH=\"\$PATH:\${HOME}/.nvim/nvim-linux64/bin\"" >> ~/.zshrc
-fi
+#if [[ ":$PATH:" != *"nvim/nvim-linux64/bin"* ]]; then
+  #echo "export PATH=\"\$PATH:\${HOME}/.nvim/nvim-linux64/bin\"" >> ~/.zshrc
+  export PATH="$PATH:${HOME}/.nvim/nvim-linux64/bin"
+#fi
 
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
   https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
