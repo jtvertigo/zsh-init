@@ -317,6 +317,8 @@ set-option -g @tmux-weather-location "Ulyanovsk"
 set-option -g @tmux-weather-interval 5
 set-option -g @tmux-weather-format "%t"
 
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+
 set -g @catppuccin_window_right_separator "█ "
 set -g @catppuccin_window_number_position "right"
 set -g @catppuccin_window_middle_separator " | "
