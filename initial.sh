@@ -247,21 +247,33 @@ if helm &> /dev/null; then
 fi
 
 if pulumi &> /dev/null; then
+  echo -e "\n==> Adding pulumi binary in \$PATH"
+  if cat ~/.zshrc | grep pulumi/bin ; then
+    echo -e "\n==> pulumi binary already in \$PATH"
+  else
+    echo "export PATH=\"\$PATH:\${HOME}/.pulumi/bin\"" >> ~/.zshrc
+  fi
+ 
   echo -e "\n==> Adding autocompletion for pulumi"
   echo '[[ $commands[pulumi] ]] && source <(pulumi completion zsh)' >> ~/.zshrc
 
-  echo -e "\n==> Adding pulumi binary in \$PATH"
-  if [[ ":$PATH:" != *"pulumi/bin"* ]]; then
-    echo "export PATH=\"\$PATH:\${HOME}/.pulumi/bin\"" >> ~/.zshrc
-  fi
+  #if [[ ":$PATH:" != *"pulumi/bin"* ]]; then
+  #  echo "export PATH=\"\$PATH:\${HOME}/.pulumi/bin\"" >> ~/.zshrc
+  #fi
 
 fi
 
 if go version &> /dev/null; then
   echo -e "\n==> Adding go binary in \$PATH"
-  if [[ ":$PATH:" != *"usr/local/go/bin"* ]]; then
+  if cat ~/.zshrc | grep usr/local/go/bin ; then
+    echo -e "\n==> go binary already in \$PATH"
+  else
     echo "export PATH=\"\$PATH:/usr/local/go/bin\"" >> ~/.zshrc
   fi
+
+  #if [[ ":$PATH:" != *"usr/local/go/bin"* ]]; then
+  #  echo "export PATH=\"\$PATH:/usr/local/go/bin\"" >> ~/.zshrc
+  #fi
 fi
 
 sleep 1
