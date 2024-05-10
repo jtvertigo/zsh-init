@@ -18,6 +18,6 @@ ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}) "
 ZSH_THEME_GIT_PROMPT_DIRTY=" %{$FG[223]%} %{$FG[231]%} %{$FG[198]%}✘"
 ZSH_THEME_GIT_PROMPT_CLEAN=" %{$FG[223]%} %{$FG[231]%}"
 
-# icons ➜        ✘ ➥  ❯
+# icons ➜        ✘ ✔ ➥  ❯
 # k8s icons ☸ ⎈ 󱃾
 
