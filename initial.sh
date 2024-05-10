@@ -329,6 +329,7 @@ echo -e "\n==> Setting theme for airline (vim)"
 cp vim/autoload/airline/themes/catppuccin_*.vim ~/.vim/plugged/vim-airline-themes/autoload/airline/themes
 
 echo -e "\n==> Installing plugin manager for tmux"
+rm -rf "${HOME}"/.tmux/plugins/tpm
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 echo -e "\n==> Copy settings file for tmux"
