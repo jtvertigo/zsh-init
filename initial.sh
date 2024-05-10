@@ -58,44 +58,8 @@ esac
 #fi
 
 echo -e "\n==> Installing wget git tree curl less vim"
-#if [[ "$OS" == "CentOS Linux release 7"* ]]; then
-#  sudo $pmng -y remove git
-#  sudo $pmng -y install epel-release
-#  sudo $pmng -y groupinstall "Development Tools"
-#  sudo $pmng -y install wget tree curl less perl-CPAN gettext-devel perl-devel openssl-devel \
-#  zlib-devel curl-devel expat-devel getopt asciidoc xmlto docbook2X
-#  sudo ln -s /usr/bin/db2x_docbook2texi /usr/bin/docbook2x-texi
-#  wget https://github.com/git/git/archive/$git_version.tar.gz
-#  tar -xvf $git_version.tar.gz
-#  rm -f $git_version.tar.gz
-#  cd git-*
-#  make configure
-#  sudo ./configure --prefix=/usr
-#  sudo make
-#  sudo make install
-#  cd ..
-#  echo "==> Installing vim"
-#  sudo $pmng install -y gcc make ncurses ncurses-devel
-#  sudo $pmng install -y ctags git tcl-devel ruby ruby-devel lua lua-devel luajit luajit-devel \
-#  python python-devel perl perl-devel perl-ExtUtils-ParseXS perl-ExtUtils-XSpp \
-#  perl-ExtUtils-CBuilder perl-ExtUtils-Embed
-#  sudo $pmng remove -y vim-enhanced vim-common vim-filesystem
-#
-#  echo "==> Cloning vim repository"
-#  git clone https://github.com/vim/vim.git
-#  cd vim
-#
-#  echo "Compiling vim"
-#  ./configure --with-features=huge --enable-multibyte --enable-rubyinterp \
-#  --enable-pythoninterp --enable-perlinterp --enable-luainterp
-#  make
-#  sudo make install
-#  source ~/$bash
-#  cd ..
-#else
 sudo $pmng update
 sudo $pmng install -y wget git tree jq curl less vim tmux build-essential
-#fi
 
 #if [[ "$OS" == "Ubuntu"* ]]; then
 echo -e "\n==> Installing bat"
@@ -151,7 +115,7 @@ chmod +x ./install.sh
 echo -e "\n==> Installing oh-my-zsh plugins"
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
-echo -e "\n==> Enabling plugins in ~/.zshrc"
+echo -e "\n==> Enabling plugins in ${HOME}/.zshrc"
 sed -i 's/^plugins=(git.*/plugins=(git zsh-autosuggestions kube-ps1)/' ~/.zshrc
 
 echo -e "\n==> Copying theme to oh-my-zsh folder"
@@ -173,7 +137,7 @@ fi
 
 sleep 5
 
-echo -e "\n==> Adding aliases to ~/.zshrc file"
+echo -e "\n==> Adding aliases to ${HOME}/.zshrc file"
 echo '
 alias k="kubectl"
 alias kgp="kubectl get pods"
