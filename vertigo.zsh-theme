@@ -5,7 +5,8 @@ KUBE_PS1_SEPARATOR=" "
 KUBE_PS1_DIVIDER=" "
 KUBE_PS1_SYMBOL_DEFAULT="\Uf10fe"
 
-PROMPT='%{$FG[033]%}%n%{$fg[white]%}/%{$FG[103]%}%m %{$FG[111]%}%c%{$reset_color%} $(git_prompt_info)$(kube_ps1)
+PROMPT='
+%{$FG[033]%}%n%{$fg[white]%}/%{$FG[103]%}%m %{$FG[111]%}%c%{$reset_color%} $(git_prompt_info)$(kube_ps1)
 %(?:%{$FG[085]%}❯ %{$reset_color%}:%{$FG[197]%}❯ %{$reset_color%})'
 #PROMPT+='%{$FG[111]%}%c%{$reset_color%} $(git_prompt_info)'
 

@@ -1,83 +1,116 @@
 #!/bin/bash
 
+set -eo pipefail
 
-OS="$(( lsb_release -ds || cat /etc/*release || uname -om ) 2>/dev/null | head -n1)"
-git_version="v2.39.0"
+# Check for /etc/os-release file
+if [ -f /etc/os-release ]; then
+  source /etc/os-release
+  if [ -n "$ID" ]; then
+    echo "Linux distribution: $ID"
+  else
+    echo "Uknown \$ID variable"
+    exit 9
+  fi
+else
+  echo "Unable to determine Linux distribution."
+  exit 9
+fi
+
+#OS="$(( lsb_release -ds || cat /etc/*release || uname -om ) 2>/dev/null | head -n1)"
+#git_version="v2.39.0"
 NVIM_VERSION="v0.9.5"
 
-if [[ "$OS" == "CentOS"* ]]; then
-  echo -e "\n==> Linux distribution is: $OS"
-  pmng="yum"
-  bash=".bash_profile"
-elif [[ "$OS" == *"Red Hat"* ]]; then
-  echo -e "\n==> Linux distribution is: $OS"
-  pmng="yum"
-  bash=".bash_profile"
-elif [[ "$OS" == *"Rocky"* ]]; then
-  echo -e "\n==> Linux distribution is: $OS"
-  pmng="dnf"
-  bash=".bash_profile"
-elif [[ "$OS" == "Ubuntu"* ]]; then
-  echo -e "\n==> Linux distribution is: $OS"
-  pmng="apt"
-  bash=".bashrc" # FIXME
-elif [[ "$OS" == "Debian"* ]]; then
-  echo -e "\n==> Linux distribution is: $OS"
-  pmng="apt"
-  bash=".bashrc" # FIXME
-else
-  echo -e "\n==> Unknown Linux distribution"; exit;
-fi
+case $ID in
+  ubuntu)
+    pmng="apt"
+    ;;
+  debian)
+    pmng="apt"
+    ;;
+  *)
+    echo "Unsupported Linux distribution"
+    exit 9
+    ;;
+esac
+
+#if [[ "$ID" == "CentOS"* ]]; then
+#  echo -e "\n==> Linux distribution is: $OS"
+#  pmng="yum"
+#  bash=".bash_profile"
+#elif [[ "$ID" == *"Red Hat"* ]]; then
+#  echo -e "\n==> Linux distribution is: $OS"
+#  pmng="yum"
+#  bash=".bash_profile"
+#elif [[ "$ID" == *"Rocky"* ]]; then
+#  echo -e "\n==> Linux distribution is: $OS"
+#  pmng="dnf"
+#  bash=".bash_profile"
+#elif [[ "$ID" == *"ubuntu"* ]]; then
+#  echo -e "\n==> Linux distribution is: $OS"
+#  pmng="apt"
+#  bash=".bashrc" # FIXME
+#elif [[ "$ID" == "Debian"* ]]; then
+#  echo -e "\n==> Linux distribution is: $OS"
+#  pmng="apt"
+#  bash=".bashrc" # FIXME
+#else
+#  echo -e "\n==> Unknown Linux distribution"; exit;
+#fi
 
 echo -e "\n==> Installing wget git tree curl less vim"
-if [[ "$OS" == "CentOS Linux release 7"* ]]; then
-  sudo $pmng -y remove git
-  sudo $pmng -y install epel-release
-  sudo $pmng -y groupinstall "Development Tools"
-  sudo $pmng -y install wget tree curl less perl-CPAN gettext-devel perl-devel openssl-devel \
-  zlib-devel curl-devel expat-devel getopt asciidoc xmlto docbook2X
-  sudo ln -s /usr/bin/db2x_docbook2texi /usr/bin/docbook2x-texi
-  wget https://github.com/git/git/archive/$git_version.tar.gz
-  tar -xvf $git_version.tar.gz
-  rm -f $git_version.tar.gz
-  cd git-*
-  make configure
-  sudo ./configure --prefix=/usr
-  sudo make
-  sudo make install
-  cd ..
-  echo "==> Installing vim"
-  sudo $pmng install -y gcc make ncurses ncurses-devel
-  sudo $pmng install -y ctags git tcl-devel ruby ruby-devel lua lua-devel luajit luajit-devel \
-  python python-devel perl perl-devel perl-ExtUtils-ParseXS perl-ExtUtils-XSpp \
-  perl-ExtUtils-CBuilder perl-ExtUtils-Embed
-  sudo $pmng remove -y vim-enhanced vim-common vim-filesystem
+#if [[ "$OS" == "CentOS Linux release 7"* ]]; then
+#  sudo $pmng -y remove git
+#  sudo $pmng -y install epel-release
+#  sudo $pmng -y groupinstall "Development Tools"
+#  sudo $pmng -y install wget tree curl less perl-CPAN gettext-devel perl-devel openssl-devel \
+#  zlib-devel curl-devel expat-devel getopt asciidoc xmlto docbook2X
+#  sudo ln -s /usr/bin/db2x_docbook2texi /usr/bin/docbook2x-texi
+#  wget https://github.com/git/git/archive/$git_version.tar.gz
+#  tar -xvf $git_version.tar.gz
+#  rm -f $git_version.tar.gz
+#  cd git-*
+#  make configure
+#  sudo ./configure --prefix=/usr
+#  sudo make
+#  sudo make install
+#  cd ..
+#  echo "==> Installing vim"
+#  sudo $pmng install -y gcc make ncurses ncurses-devel
+#  sudo $pmng install -y ctags git tcl-devel ruby ruby-devel lua lua-devel luajit luajit-devel \
+#  python python-devel perl perl-devel perl-ExtUtils-ParseXS perl-ExtUtils-XSpp \
+#  perl-ExtUtils-CBuilder perl-ExtUtils-Embed
+#  sudo $pmng remove -y vim-enhanced vim-common vim-filesystem
+#
+#  echo "==> Cloning vim repository"
+#  git clone https://github.com/vim/vim.git
+#  cd vim
+#
+#  echo "Compiling vim"
+#  ./configure --with-features=huge --enable-multibyte --enable-rubyinterp \
+#  --enable-pythoninterp --enable-perlinterp --enable-luainterp
+#  make
+#  sudo make install
+#  source ~/$bash
+#  cd ..
+#else
+sudo $pmng update
+sudo $pmng install -y wget git tree jq curl less vim tmux build-essential
+#fi
 
-  echo "==> Cloning vim repository"
-  git clone https://github.com/vim/vim.git
-  cd vim
+#if [[ "$OS" == "Ubuntu"* ]]; then
+echo -e "\n==> Installing bat"
+sudo $pmng install -y bat
+#fi
 
-  echo "Compiling vim"
-  ./configure --with-features=huge --enable-multibyte --enable-rubyinterp \
-  --enable-pythoninterp --enable-perlinterp --enable-luainterp
-  make
-  sudo make install
-  source ~/$bash
-  cd ..
+if [[ -f "${HOME}"/.gitconfig ]] ; then
+  echo -e "\n==> File ${HOME}/.gitconfig exists!"
 else
-  sudo $pmng -y install wget git tree jq curl less vim tmux
+  echo -e "\n==> Setting git config parameters"
+  git config --global user.name "vertigojt"
+  git config --global user.email "vertigojt@null.domain"
 fi
 
-if [[ "$OS" == "Ubuntu"* ]]; then
-  echo -e "\n==> Installing bat"
-  sudo $pmng install -y bat
-fi
-
-echo -e "\n==> Setting git config parameters"  # FIXME
-git config --global user.name "vertigojt"
-git config --global user.email "vertigojt@null.domain"
-
-echo -e "\n==> 🌈 Setting colorscheme for vim 🌈"
+echo -e "\n==> Setting colorscheme for vim"
 mkdir -p ~/.vim/colors
 git clone https://github.com/Rigellute/rigel.git
 git clone https://github.com/catppuccin/vim.git
@@ -156,6 +189,7 @@ alias kgaa="kubectl get all -A"
 alias kgaaw="kubectl get all -A -o wide"
 alias kgn="kubectl get nodes"
 alias kgnw="kubectl get nodes -o wide"
+alias kgns="kubectl get ns"
 
 alias kdp="kubectl describe pod"
 alias kdd="kubectl describe deployment"
@@ -209,22 +243,20 @@ fi
 export VISUAL=$EDITOR
 export SYSTEMD_EDITOR=$EDITOR' >> ~/.zshrc
 
-sleep 1
+sleep 2
 
-if [[ "$OS" == "Ubuntu"* ]]; then
+#if [[ "$OS" == "Ubuntu"* ]]; then
 echo '
 alias cat="batcat"
 alias ccat="/usr/bin/cat"' >> ~/.zshrc
-fi
+#fi
 
 sleep 1
 
-if [[ "$OS" == *"Rocky"* ]]; then
-  echo -e "\n==> Making zsh as default shell"
-  sudo usermod -s $(which zsh) ${USER}
-fi
-
-sleep 1
+#if [[ "$OS" == *"Rocky"* ]]; then
+#  echo -e "\n==> Making zsh as default shell"
+#  sudo usermod -s $(which zsh) ${USER}
+#fi
 
 if kubectl &> /dev/null; then
   echo -e "\n==> Adding autocompletion for kubectl"
@@ -293,54 +325,59 @@ sleep 1
 
 vim +PlugInstall +qall
 
-echo -e "\n==> 🌈 Setting theme for airline 🌈"
+echo -e "\n==> Setting theme for airline (vim)"
 cp vim/autoload/airline/themes/catppuccin_*.vim ~/.vim/plugged/vim-airline-themes/autoload/airline/themes
 
 echo -e "\n==> Installing plugin manager for tmux"
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
-echo -e "\n==> Set settings for tmux"
+echo -e "\n==> Copy settings file for tmux"
 rm -rf ~/.tmux.conf
-echo '
-unbind r
-bind r source-file ~/.tmux.conf
+cp .tmux.conf "${HOME}"/.tmux.conf
+#echo '
+#unbind r
+#bind r source-file ~/.tmux.conf
+#
+#set -g mouse on
+#
+#set -g @plugin 'tmux-plugins/tpm'
+#set -g @plugin 'tmux-plugins/tmux-sensible'
+#
+#set -g @plugin 'catppuccin/tmux'
+#set -g @plugin 'tmux-plugins/tpm'
+#set -g @plugin 'xamut/tmux-weather'
+#set-option -g @tmux-weather-location "Ulyanovsk"
+#set-option -g @tmux-weather-interval 5
+#set-option -g @tmux-weather-format "%t"
+#
+#set -g @plugin 'tmux-plugins/tmux-resurrect'
+#
+#set -g @catppuccin_window_right_separator "█ "
+#set -g @catppuccin_window_number_position "right"
+#set -g @catppuccin_window_middle_separator " | "
+#
+#set -g @catppuccin_window_default_fill "none"
+#
+#set -g @catppuccin_window_current_fill "all"
+#
+#set -g @catppuccin_status_modules_right "session directory user host weather"
+#set -g @catppuccin_status_left_separator "█"
+#set -g @catppuccin_status_right_separator "█"
+#
+#set -g @catppuccin_date_time_text "%Y-%m-%d %H:%M:%S"
+#
+#run '~/.tmux/plugins/tpm/tpm'
+#' >> ~/.tmux.conf
 
-set -g mouse on
-
-set -g @plugin 'tmux-plugins/tpm'
-set -g @plugin 'tmux-plugins/tmux-sensible'
-
-set -g @plugin 'catppuccin/tmux'
-set -g @plugin 'tmux-plugins/tpm'
-set -g @plugin 'xamut/tmux-weather'
-set-option -g @tmux-weather-location "Ulyanovsk"
-set-option -g @tmux-weather-interval 5
-set-option -g @tmux-weather-format "%t"
-
-set -g @plugin 'tmux-plugins/tmux-resurrect'
-
-set -g @catppuccin_window_right_separator "█ "
-set -g @catppuccin_window_number_position "right"
-set -g @catppuccin_window_middle_separator " | "
-
-set -g @catppuccin_window_default_fill "none"
-
-set -g @catppuccin_window_current_fill "all"
-
-set -g @catppuccin_status_modules_right "session directory user host weather"
-set -g @catppuccin_status_left_separator "█"
-set -g @catppuccin_status_right_separator "█"
-
-set -g @catppuccin_date_time_text "%Y-%m-%d %H:%M:%S"
-
-run '~/.tmux/plugins/tpm/tpm'
-' >> ~/.tmux.conf
-
-echo -e "\n==> Installing nvim" 
-curl -LO https://github.com/neovim/neovim/releases/download/"${NVIM_VERSION}"/nvim-linux64.tar.gz
-sudo rm -rf ~/.nvim
-mkdir -p ~/.nvim
-sudo tar -C ~/.nvim -xzf nvim-linux64.tar.gz
+if nvim --version &> /dev/null; then
+  echo -e "\n==> nvim already installed!"
+else
+  echo -e "\n==> Installing nvim" 
+  curl -LO https://github.com/neovim/neovim/releases/download/"${NVIM_VERSION}"/nvim-linux64.tar.gz
+  sudo rm -rf ~/.nvim
+  mkdir -p ~/.nvim
+  sudo tar -C ~/.nvim -xzf nvim-linux64.tar.gz
+fi
 
 sleep 5
 
@@ -351,47 +388,52 @@ else
   echo "export PATH=\"\$PATH:\${HOME}/.nvim/nvim-linux64/bin\"" >> ~/.zshrc
 fi
   
-#if [[ ":$PATH:" != *"nvim/nvim-linux64/bin"* ]]; then
-  #echo "export PATH=\"\$PATH:\${HOME}/.nvim/nvim-linux64/bin\"" >> ~/.zshrc
-  export PATH="$PATH:${HOME}/.nvim/nvim-linux64/bin"
-#fi
+export PATH="$PATH:${HOME}/.nvim/nvim-linux64/bin"
 
-sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+#sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+#  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 
-echo -e "\n==> Setting up ~/.config/nvim/init.vim file"
+echo -e "\n==> Setting up nvim with lua config"
+rm -rf "${HOME}"/.config/nvim
+rm -rf "${HOME}"/.local/share/nvim
 mkdir -p "${HOME}"/.config/nvim
-cat > ${HOME}/.config/nvim/init.vim << EOF
-set termguicolors
-syntax enable
-set autoindent expandtab tabstop=2 shiftwidth=2
-hi Normal guibg=NONE ctermbg=NONE
+cp -r .config/nvim/* "${HOME}"/.config/nvim/
 
-call plug#begin()
-Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'tpope/vim-fugitive'
-Plug 'scrooloose/nerdtree'
-call plug#end()
-
-colorscheme catppuccin-mocha
-
-let g:airline_powerline_fonts = 1
-let g:airline_theme = 'catppuccin_mocha'
-EOF
-
-sudo cp -r ${HOME}/.vim/plugged/vim-airline ${HOME}/.local/share/nvim/plugged
-sudo cp -r ${HOME}/.vim/plugged/vim-airline-themes ${HOME}/.local/share/nvim/plugged
-sudo cp -r ${HOME}/.vim/plugged/vim-fugitive ${HOME}/.local/share/nvim/plugged
-
-sudo chown ${USER}:${USER} ${HOME}/.local/share/nvim/plugged
-
-nvim +PlugInstall +qall
+#echo -e "\n==> Setting up ~/.config/nvim/init.vim file"
+#mkdir -p "${HOME}"/.config/nvim
+#cat > ${HOME}/.config/nvim/init.vim << EOF
+#set termguicolors
+#syntax enable
+#set autoindent expandtab tabstop=2 shiftwidth=2
+#hi Normal guibg=NONE ctermbg=NONE
+#
+#call plug#begin()
+#Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
+#Plug 'vim-airline/vim-airline'
+#Plug 'vim-airline/vim-airline-themes'
+#Plug 'tpope/vim-fugitive'
+#Plug 'scrooloose/nerdtree'
+#call plug#end()
+#
+#colorscheme catppuccin-mocha
+#
+#let g:airline_powerline_fonts = 1
+#let g:airline_theme = 'catppuccin_mocha'
+#EOF
+#
+#sudo cp -r ${HOME}/.vim/plugged/vim-airline ${HOME}/.local/share/nvim/plugged
+#sudo cp -r ${HOME}/.vim/plugged/vim-airline-themes ${HOME}/.local/share/nvim/plugged
+#sudo cp -r ${HOME}/.vim/plugged/vim-fugitive ${HOME}/.local/share/nvim/plugged
+#
+#sudo chown ${USER}:${USER} ${HOME}/.local/share/nvim/plugged
+#
+#nvim +PlugInstall +qall
 
 cd ..
 
 sudo rm -rf zsh-init
 
 echo -e "\n==> Done!"
+
 zsh
+
