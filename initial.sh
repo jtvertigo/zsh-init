@@ -308,7 +308,8 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 echo -e "\n==> Copy settings file for tmux"
 rm -rf "${HOME}"/.tmux.conf
-rm -rf "${HOME}"/.config/tmux/tmux.conf
+rm -rf "${HOME}"/.config/tmux/
+mkdir -p "${HOME}"/.config/tmux
 cp .config/tmux/tmux.conf "${HOME}"/.config/tmux/tmux.conf
 
 if nvim --version &> /dev/null; then
