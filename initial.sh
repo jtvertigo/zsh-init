@@ -17,7 +17,6 @@ else
 fi
 
 #OS="$(( lsb_release -ds || cat /etc/*release || uname -om ) 2>/dev/null | head -n1)"
-#git_version="v2.39.0"
 NVIM_VERSION="v0.9.5"
 
 case $ID in
@@ -124,7 +123,7 @@ chmod +x ./install.sh
 ./install.sh
 
 echo -e "\n==> Installing oh-my-zsh plugins"
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}"/plugins/zsh-autosuggestions
 
 echo -e "\n==> Enabling plugins in ${HOME}/.zshrc"
 sed -i 's/^plugins=(git.*/plugins=(git zsh-autosuggestions kube-ps1)/' ~/.zshrc
@@ -308,42 +307,9 @@ rm -rf "${HOME}"/.tmux/plugins/tpm
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 echo -e "\n==> Copy settings file for tmux"
-rm -rf ~/.tmux.conf
-cp .tmux.conf "${HOME}"/.tmux.conf
-#echo '
-#unbind r
-#bind r source-file ~/.tmux.conf
-#
-#set -g mouse on
-#
-#set -g @plugin 'tmux-plugins/tpm'
-#set -g @plugin 'tmux-plugins/tmux-sensible'
-#
-#set -g @plugin 'catppuccin/tmux'
-#set -g @plugin 'tmux-plugins/tpm'
-#set -g @plugin 'xamut/tmux-weather'
-#set-option -g @tmux-weather-location "Ulyanovsk"
-#set-option -g @tmux-weather-interval 5
-#set-option -g @tmux-weather-format "%t"
-#
-#set -g @plugin 'tmux-plugins/tmux-resurrect'
-#
-#set -g @catppuccin_window_right_separator "█ "
-#set -g @catppuccin_window_number_position "right"
-#set -g @catppuccin_window_middle_separator " | "
-#
-#set -g @catppuccin_window_default_fill "none"
-#
-#set -g @catppuccin_window_current_fill "all"
-#
-#set -g @catppuccin_status_modules_right "session directory user host weather"
-#set -g @catppuccin_status_left_separator "█"
-#set -g @catppuccin_status_right_separator "█"
-#
-#set -g @catppuccin_date_time_text "%Y-%m-%d %H:%M:%S"
-#
-#run '~/.tmux/plugins/tpm/tpm'
-#' >> ~/.tmux.conf
+rm -rf "${HOME}"/.tmux.conf
+rm -rf "${HOME}"/.config/tmux/tmux.conf
+cp .config/tmux/tmux.conf "${HOME}"/.config/tmux/tmux.conf
 
 if nvim --version &> /dev/null; then
   echo -e "\n==> nvim already installed!"
@@ -374,36 +340,6 @@ rm -rf "${HOME}"/.config/nvim
 rm -rf "${HOME}"/.local/share/nvim
 mkdir -p "${HOME}"/.config/nvim
 cp -r .config/nvim/* "${HOME}"/.config/nvim/
-
-#echo -e "\n==> Setting up ~/.config/nvim/init.vim file"
-#mkdir -p "${HOME}"/.config/nvim
-#cat > ${HOME}/.config/nvim/init.vim << EOF
-#set termguicolors
-#syntax enable
-#set autoindent expandtab tabstop=2 shiftwidth=2
-#hi Normal guibg=NONE ctermbg=NONE
-#
-#call plug#begin()
-#Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
-#Plug 'vim-airline/vim-airline'
-#Plug 'vim-airline/vim-airline-themes'
-#Plug 'tpope/vim-fugitive'
-#Plug 'scrooloose/nerdtree'
-#call plug#end()
-#
-#colorscheme catppuccin-mocha
-#
-#let g:airline_powerline_fonts = 1
-#let g:airline_theme = 'catppuccin_mocha'
-#EOF
-#
-#sudo cp -r ${HOME}/.vim/plugged/vim-airline ${HOME}/.local/share/nvim/plugged
-#sudo cp -r ${HOME}/.vim/plugged/vim-airline-themes ${HOME}/.local/share/nvim/plugged
-#sudo cp -r ${HOME}/.vim/plugged/vim-fugitive ${HOME}/.local/share/nvim/plugged
-#
-#sudo chown ${USER}:${USER} ${HOME}/.local/share/nvim/plugged
-#
-#nvim +PlugInstall +qall
 
 cd ..
 
