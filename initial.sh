@@ -123,7 +123,7 @@ chmod +x ./install.sh
 ./install.sh
 
 echo -e "\n==> Installing oh-my-zsh plugins"
-git clone https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
+git clone https://github.com/zsh-users/zsh-autosuggestions "${HOME}/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
 
 echo -e "\n==> Enabling plugins in ${HOME}/.zshrc"
 sed -i 's/^plugins=(git.*/plugins=(git zsh-autosuggestions kube-ps1)/' ~/.zshrc
