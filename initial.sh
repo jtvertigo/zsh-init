@@ -59,7 +59,18 @@ esac
 
 echo -e "\n==> Installing wget git tree curl less vim"
 sudo $pmng update
-sudo $pmng install -y wget git tree jq curl less vim tmux build-essential
+sudo $pmng install -y \
+  wget \
+  git \
+  tree \
+  jq \
+  curl \
+  less \
+  vim \
+  tmux \
+  build-essential \
+  unzip \
+  python3-venv
 
 #if [[ "$OS" == "Ubuntu"* ]]; then
 echo -e "\n==> Installing bat"
