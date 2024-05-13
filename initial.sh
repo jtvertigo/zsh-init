@@ -338,7 +338,7 @@ export PATH="$PATH:${HOME}/.nvim/nvim-linux64/bin"
 
 echo -e "\n==> Setting up nvim with lua config"
 rm -rf "${HOME}"/.config/nvim
-rm -rf "${HOME}"/.local/share/nvim
+sudo rm -rf "${HOME}"/.local/share/nvim
 mkdir -p "${HOME}"/.config/nvim
 cp -r .config/nvim/* "${HOME}"/.config/nvim/
 
