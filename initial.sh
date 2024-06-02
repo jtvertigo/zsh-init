@@ -346,7 +346,19 @@ cd ..
 
 sudo rm -rf zsh-init
 
+echo -e "\n==> Install tmux plugins"
+~/.tmux/plugins/tpm/bin/install_plugins
+sleep 5
+
+if test -d "${HOME}/.config/tmux/plugins/tokyo-night-tmux"; then
+  echo -e "\n==> Setting up tmux tokyo-night plugin"
+  sed -i 's@^tmux set -g window-status-current-format.*$@tmux set -g window-status-current-format "$RESET#[fg=${THEME[green]},bg=${THEME[bblack]}] #{?#{==:#{pane_current_command},ssh},󰣀,} #[fg=${THEME[foreground]},bold,nodim]$window_number #{b:pane_current_path}#[nobold]#{?window_zoomed_flag, $zoom_number, $custom_pane} #{?window_last_flag,,} "@' "${HOME}/.config/tmux/plugins/tokyo-night-tmux/tokyo-night.tmux"
+
+  sed -i 's@^tmux set -g window-status-format.*$@tmux set -g window-status-format "$RESET#[fg=${THEME[foreground]}] #{?#{==:#{pane_current_command},ssh},󰣀,}${RESET} $window_number #{b:pane_current_path}#[nobold,dim]#{?window_zoomed_flag, $zoom_number, $custom_pane} #[fg=${THEME[yellow]}]#{?window_last_flag, , } "@' "${HOME}/.config/tmux/plugins/tokyo-night-tmux/tokyo-night.tmux"
+else
+  echo -e "\n==> Directory witj tmux tokyo-night plugindoes not exist "
+fi
+
 echo -e "\n==> Done!"
 
 zsh
-
