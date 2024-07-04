@@ -7,7 +7,7 @@ KUBE_PS1_SYMBOL_DEFAULT="\Uf10fe"
 
 PROMPT='
 %{$FG[033]%}%n%{$fg[white]%}/%{$FG[103]%}%m %{$FG[111]%}%c%{$reset_color%} $(git_prompt_info)$(kube_ps1)
-%(?:%{$FG[085]%}❯ %{$reset_color%}:%{$FG[197]%}❯ %{$reset_color%})'
+%(?:%{$FG[085]%}λ %{$reset_color%}:%{$FG[197]%}λ %{$reset_color%})'
 #PROMPT+='%{$FG[111]%}%c%{$reset_color%} $(git_prompt_info)'
 
 #PROMPT='$(kube_ps1)'$PROMPT
@@ -18,6 +18,6 @@ ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}) "
 ZSH_THEME_GIT_PROMPT_DIRTY=" %{$FG[223]%} %{$FG[231]%} %{$FG[198]%}✘"
 ZSH_THEME_GIT_PROMPT_CLEAN=" %{$FG[223]%} %{$FG[231]%}"
 
-# icons ➜        ✘ ✔ ➥  ❯
+# icons ➜        ✘ ✔ ➥  ❯ λ
 # k8s icons ☸ ⎈ 󱃾
 

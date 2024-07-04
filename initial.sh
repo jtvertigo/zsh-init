@@ -71,18 +71,14 @@ sudo $pmng install -y \
   unzip \
   python3-venv
 
-#if [[ "$OS" == "Ubuntu"* ]]; then
-echo -e "\n==> Installing bat"
-sudo $pmng install -y bat
-#fi
-
-if [[ -f "${HOME}"/.gitconfig ]] ; then
-  echo -e "\n==> File ${HOME}/.gitconfig exists!"
-else
-  echo -e "\n==> Setting git config parameters"
-  git config --global user.name "vertigojt"
-  git config --global user.email "vertigojt@null.domain"
-fi
+# if [[ -f "${HOME}"/.gitconfig ]] ; then
+  # echo -e "\n==> File ${HOME}/.gitconfig exists!"
+# else
+echo -e "\n==> Setting git config parameters"
+cp .gitconfig "${HOME}/.gitconfig"
+  # git config --global user.name "vertigojt"
+  # git config --global user.email "vertigojt@null.domain"
+# fi
 
 echo -e "\n==> Setting colorscheme for vim"
 mkdir -p ~/.vim/colors
@@ -134,15 +130,29 @@ cp vertigo.zsh-theme ~/.oh-my-zsh/themes/
 echo -e "\n==> Enabling vertigo theme as default"
 sed -i 's/^ZSH_THEME=.*/ZSH_THEME="vertigo"/' ~/.zshrc
 
-if batcat --help &> /dev/null; then
-  echo -e "\n==> Setting theme for batcat"
-  mkdir -p "$(batcat --config-dir)/themes"
-  curl --output-dir "$(batcat --config-dir)/themes" -LO https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Latte.tmTheme
-  curl --output-dir "$(batcat --config-dir)/themes" -LO https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Frappe.tmTheme
-  curl --output-dir "$(batcat --config-dir)/themes" -LO https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Macchiato.tmTheme
-  curl --output-dir "$(batcat --config-dir)/themes" -LO https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Mocha.tmTheme
-  batcat cache --build
-  echo 'export BAT_THEME="Catppuccin%20Mocha"' >> ~/.zshrc
+
+# bat installation
+if ! bat --help > /dev/null ; then
+  echo -e "\n=> Installing bat ..."
+  # TODO: get bat version from variable
+  curl -sSL "https://github.com/sharkdp/bat/releases/download/v0.24.0/bat-v0.24.0-x86_64-unknown-linux-gnu.tar.gz" | tar -xzf - -C /tmp && sudo cp /tmp/bat-v*/bat /usr/local/bin/ 
+fi
+echo -e "\n==> Setting theme for bat"
+rm -rf "$(bat --config-dir)"
+mkdir -p "$(bat --config-dir)/themes"
+cp -r .config/bat/themes/* "$(bat --config-dir)/themes"
+# curl --output-dir "$(batcat --config-dir)/themes" -LO https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Latte.tmTheme
+# curl --output-dir "$(batcat --config-dir)/themes" -LO https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Frappe.tmTheme
+# curl --output-dir "$(batcat --config-dir)/themes" -LO https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Macchiato.tmTheme
+# curl --output-dir "$(batcat --config-dir)/themes" -LO https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Mocha.tmTheme
+bat cache --build
+echo 'export BAT_THEME="catppuccin-mocha"' >> ~/.zshrc
+
+# delta installation
+if ! delta --help > /dev/null ; then
+  echo -e "\n=> Installing delta ..."
+  # TODO: get delta version from variable
+  curl -sSL "https://github.com/dandavison/delta/releases/download/0.17.0/delta-0.17.0-x86_64-unknown-linux-gnu.tar.gz" | tar -xzf - -C /tmp && sudo cp /tmp/delta-*/delta /usr/local/bin/
 fi
 
 sleep 5
@@ -186,12 +196,12 @@ alias tfaa="terraform apply -auto-approve"
 
 alias gi="git init ."
 alias gl="git log"
-alias glb="git log | batcat"
+alias glb="git log | bat"
 alias ga="git add -A"
 alias gs="git status"
 alias gc="git commit -m "
 alias gd="git diff"
-alias gdb="git diff | batcat"
+alias gdb="git diff | bat"
 alias gpom="git push origin master"
 
 alias au="sudo apt update"
@@ -221,7 +231,7 @@ sleep 2
 
 #if [[ "$OS" == "Ubuntu"* ]]; then
 echo '
-alias cat="batcat"
+alias cat="bat"
 alias ccat="/usr/bin/cat"' >> ~/.zshrc
 #fi
 
@@ -352,7 +362,7 @@ sleep 5
 
 if test -d "${HOME}/.config/tmux/plugins/tokyo-night-tmux"; then
   echo -e "\n==> Setting up tmux tokyo-night plugin"
-  sed -i 's@^tmux set -g window-status-current-format.*$@tmux set -g window-status-current-format "$RESET#[fg=${THEME[green]},bg=${THEME[bblack]}] #{?#{==:#{pane_current_command},ssh},󰣀,} #[fg=${THEME[foreground]},bold,nodim]$window_number #{b:pane_current_path}#[nobold]#{?window_zoomed_flag, $zoom_number, $custom_pane} #{?window_last_flag,,} "@' "${HOME}/.config/tmux/plugins/tokyo-night-tmux/tokyo-night.tmux"
+  sed -i 's@^tmux set -g window-status-current-format.*$@tmux set -g window-status-current-format "$RESET#[fg=${THEME[green]},bg=${THEME[bblack]}] #{?#{==:#{pane_current_command},ssh},󰣀, } #[fg=${THEME[foreground]},bold,nodim]$window_number #{b:pane_current_path}#[nobold]#{?window_zoomed_flag, $zoom_number, $custom_pane} #{?window_last_flag,,} "@' "${HOME}/.config/tmux/plugins/tokyo-night-tmux/tokyo-night.tmux"
 
   sed -i 's@^tmux set -g window-status-format.*$@tmux set -g window-status-format "$RESET#[fg=${THEME[foreground]}] #{?#{==:#{pane_current_command},ssh},󰣀,}${RESET} $window_number #{b:pane_current_path}#[nobold,dim]#{?window_zoomed_flag, $zoom_number, $custom_pane} #[fg=${THEME[yellow]}]#{?window_last_flag, , } "@' "${HOME}/.config/tmux/plugins/tokyo-night-tmux/tokyo-night.tmux"
 else
