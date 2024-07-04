@@ -133,7 +133,7 @@ sed -i 's/^ZSH_THEME=.*/ZSH_THEME="vertigo"/' ~/.zshrc
 
 # bat installation
 if ! bat --help > /dev/null ; then
-  echo -e "\n=> Installing bat ..."
+  echo -e "\n==> Installing bat ..."
   # TODO: get bat version from variable
   curl -sSL "https://github.com/sharkdp/bat/releases/download/v0.24.0/bat-v0.24.0-x86_64-unknown-linux-gnu.tar.gz" | tar -xzf - -C /tmp && sudo cp /tmp/bat-v*/bat /usr/local/bin/ 
 fi
@@ -150,7 +150,7 @@ echo 'export BAT_THEME="catppuccin-mocha"' >> ~/.zshrc
 
 # delta installation
 if ! delta --help > /dev/null ; then
-  echo -e "\n=> Installing delta ..."
+  echo -e "\n==> Installing delta ..."
   # TODO: get delta version from variable
   curl -sSL "https://github.com/dandavison/delta/releases/download/0.17.0/delta-0.17.0-x86_64-unknown-linux-gnu.tar.gz" | tar -xzf - -C /tmp && sudo cp /tmp/delta-*/delta /usr/local/bin/
 fi
