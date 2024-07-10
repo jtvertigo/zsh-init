@@ -120,9 +120,10 @@ chmod +x ./install.sh
 
 echo -e "\n==> Installing oh-my-zsh plugins"
 git clone https://github.com/zsh-users/zsh-autosuggestions "${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+git clone https://github.com/zsh-users/zsh-syntax-highlighting "${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
 
 echo -e "\n==> Enabling plugins in ${HOME}/.zshrc"
-sed -i 's/^plugins=(git.*/plugins=(git zsh-autosuggestions kube-ps1)/' ~/.zshrc
+sed -i 's/^plugins=(git.*/plugins=(git zsh-autosuggestions zsh-syntax-highlighting kube-ps1)/' ~/.zshrc
 
 echo -e "\n==> Copying theme to oh-my-zsh folder"
 cp vertigo.zsh-theme ~/.oh-my-zsh/themes/
@@ -384,7 +385,7 @@ fi
 echo -e "\n==> Installing oh-my-posh with config"
 rm -rf "${HOME}"/.config/ohmyposh
 mkdir -p "${HOME}"/.config/ohmyposh
-cp .config/ohmyposh/config.toml "${HOME}"/.config/ohmyposh/config.toml
+cp .config/ohmyposh/config.toml "${HOME}"/.config/ohmyposh/
 sudo curl -s https://ohmyposh.dev/install.sh | sudo bash -s
 
 cd ..
