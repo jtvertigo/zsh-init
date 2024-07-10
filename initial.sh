@@ -158,8 +158,12 @@ fi
 
 sleep 5
 
-echo -e "\n==> Adding aliases to ${HOME}/.zshrc file"
+echo -e "\n==> Adding aliases && highlight envs to ${HOME}/.zshrc file"
 echo '
+(( ${+ZSH_HIGHLIGHT_STYLES} )) || typeset -A ZSH_HIGHLIGHT_STYLES
+ZSH_HIGHLIGHT_STYLES[path]=none
+ZSH_HIGHLIGHT_STYLES[path_prefix]=none
+
 alias k="kubectl"
 alias kgp="kubectl get pods"
 alias kgpa="kubectl get pods -A"
