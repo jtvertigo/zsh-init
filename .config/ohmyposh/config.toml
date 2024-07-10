@@ -1,0 +1,116 @@
+#:schema https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json
+
+version = 2
+final_space = true
+console_title_template = '{{ .Shell }} in {{ .Folder }}'
+
+[[blocks]]
+  type = 'prompt'
+  alignment = 'left'
+  newline = true
+
+  [[blocks.segments]]
+    type = "os"
+    style = "plain"
+    foreground = "103"
+    background = "transparent"
+    template = "{{ if .WSL }}WSL at {{ end }}{{.Icon}} "
+
+    [blocks.segments.properties]
+    arch   = "\uf303"
+    ubuntu = "\uf31c"
+
+  [[blocks.segments]]
+    type = 'path'
+    style = 'plain'
+    background = 'transparent'
+    foreground = '103'
+    # template = ' {{ .Path }} '
+    template = '{{ .Path }} '
+
+    [blocks.segments.properties]
+      style = 'folder'
+
+  [[blocks.segments]]
+    type = 'git'
+    style = 'plain'
+    foreground = '223'
+    background = 'transparent'
+    template = ' {{ .HEAD }}{{ if or (.Working.Changed) (.Staging.Changed) }}*{{ end }} <cyan>{{ if gt .Behind 0 }}⇣{{ end }}{{ if gt .Ahead 0 }}⇡{{ end }}</>'
+
+    [blocks.segments.properties]
+      branch_icon = '  '
+      commit_icon = '@'
+      fetch_status = true
+
+  [[blocks.segments]]
+    type = "kubectl"
+    style = "plain"
+    foreground = "110"
+    background = "transparent"
+    template = "󱃾 {{.Context}}{{if .Namespace}} :: {{.Namespace}}{{end}} "
+
+    [properties.context_aliases]
+    "arn:aws:eks:eu-west-1:1234567890:cluster/posh" = "posh"
+
+  [[blocks.segments]]
+    type = "helm"
+    style = "plain"
+    foreground = "#a7cae1"
+    background = "transparent"
+    template = "󰠳 {{ .Version }} "
+
+    [blocks.segments.properties]
+    display_mode = 'files'
+
+  [[blocks.segments]]
+    type = "go"
+    style = "plain"
+    foreground = "051" 
+    background = "transparent"
+    template = "ﳑ {{ .Full }} "
+
+    # [blocks.segments.properties]
+    #   display_mode = 'always'
+
+[[blocks]]
+  type = 'rprompt'
+  overflow = 'hidden'
+
+  [[blocks.segments]]
+    type = 'executiontime'
+    style = 'plain'
+    foreground = '223' 
+    background = 'transparent'
+    template = '{{ .FormattedMs }}'
+
+    [blocks.segments.properties]
+      threshold = 2000
+
+[[blocks]]
+  type = 'prompt'
+  alignment = 'left'
+  newline = true
+
+  [[blocks.segments]]
+    type = 'text'
+    style = 'plain'
+    foreground_templates = [
+      "{{if gt .Code 0}}211{{end}}",
+      "{{if eq .Code 0}}110{{end}}",
+    ]
+    background = 'transparent'
+    template = '❯'
+
+[transient_prompt]
+  foreground_templates = [
+    "{{if gt .Code 0}}211{{end}}",
+    "{{if eq .Code 0}}110{{end}}",
+  ]
+  background = 'transparent'
+  template = '❯ '
+
+[secondary_prompt]
+  foreground = '110'
+  background = 'transparent'
+  template = '❯❯ '

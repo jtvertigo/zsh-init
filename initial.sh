@@ -229,11 +229,27 @@ export SYSTEMD_EDITOR=$EDITOR' >> ~/.zshrc
 
 sleep 2
 
-#if [[ "$OS" == "Ubuntu"* ]]; then
 echo '
 alias cat="bat"
-alias ccat="/usr/bin/cat"' >> ~/.zshrc
-#fi
+alias ccat="/usr/bin/cat"
+
+# History
+HISTSIZE=6000
+HISTFILE=~/.zsh_history
+SAVEHIST=$HISTSIZE
+HISTDUP=erase
+setopt appendhistory
+setopt sharehistory
+setopt inc_append_history
+setopt hist_ignore_space
+setopt hist_ignore_all_dups
+setopt hist_save_no_dups
+setopt hist_ignore_dups
+setopt hist_find_no_dups
+
+# Completion styling
+zstyle ":completion:*" matcher-list "m:{a-z}={A-Za-z}"
+' >> ~/.zshrc
 
 sleep 1
 
@@ -352,10 +368,6 @@ sudo rm -rf "${HOME}"/.local/share/nvim
 mkdir -p "${HOME}"/.config/nvim
 cp -r .config/nvim/* "${HOME}"/.config/nvim/
 
-cd ..
-
-sudo rm -rf zsh-init
-
 echo -e "\n==> Install tmux plugins"
 ~/.tmux/plugins/tpm/bin/install_plugins
 sleep 5
@@ -368,6 +380,19 @@ if test -d "${HOME}/.config/tmux/plugins/tokyo-night-tmux"; then
 else
   echo -e "\n==> Directory witj tmux tokyo-night plugindoes not exist "
 fi
+
+echo -e "\n==> Installing oh-my-posh with config"
+rm -rf "${HOME}"/.config/ohmyposh
+mkdir -p "${HOME}"/.config/ohmyposh
+cp .config/ohmyposh/config.toml "${HOME}"/.config/ohmyposh/config.toml
+sudo curl -s https://ohmyposh.dev/install.sh | sudo bash -s
+
+cd ..
+sudo rm -rf zsh-init
+
+echo '
+eval "$(oh-my-posh init zsh --config ${HOME}/.config/ohmyposh/config.toml)"
+' >> "${HOME}"/.zshrc
 
 echo -e "\n==> Done!"
 
