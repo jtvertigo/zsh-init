@@ -302,6 +302,16 @@ local default_plugins = {
     event = { "BufReadPre", "BufNewFile" },
 
     config = function()
+
+      local yamllint = require("lint").linters.yamllint
+      yamllint.args = {
+        '--format',
+        'parsable',
+        '-d',
+        '{ extends: default, rules: { line-length: disable, document-start: disable } }',
+        '-'
+      }
+
       local lint = require("lint")
       lint.linters_by_ft = {
         dockerfile = { "hadolint" },
