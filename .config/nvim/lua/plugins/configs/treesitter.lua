@@ -11,6 +11,7 @@ local options = {
     "gowork",
     "yaml",
     "dockerfile",
+    "terraform",
   },
 
   -- autoinstall = true,
